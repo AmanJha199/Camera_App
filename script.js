@@ -4,8 +4,9 @@ let video = document.querySelector("video");
 let vidbtn = document.querySelector("button#record");
 let capbtn = document.querySelector("button#capture");
 let body = document.querySelector("body");
+let galleryBtn = document.querySelector("#gallery");
 
-let filters = document.querySelector(".filters");
+let filters = document.querySelectorAll(".filters");
 
 let zoomIn = document.querySelector(".zoom-in");
 let zoomOut = document.querySelector(".zoom-out");
@@ -20,19 +21,26 @@ let minZoom = 1;
 let maxZoom = 3;
 let currZoom = 1;
 
-// let options = { mimeType: "video/webm; codecs=vp9" };
+galleryBtn.addEventListener("click", function() {
+    location.assign("gallery.html");
+})
 
-let filter = ""; //canvas use image filter daalne ke  liye
+let options = { mimeType: "video/webm; codecs=vp9" };
+
+let filter = " "; //canvas use image filter daalne ke  liye
 
 for(let i = 0; i < filters.length; i++) {
     filters[i].addEventListener("click", function(e) {
         filter = e.currentTarget.style.backgroundColor;
+        // remove filter if exist 
+        // apply new filter using the above 
+        removeFilter();
         applyFilter(filter);
-        // removeFilter();
+       
     })
 }
 
-//Event listener for zoom-in button 
+// Event listener for zoom-in button 
 zoomIn.addEventListener("click", function() {
     if(currZoom < maxZoom){
         currZoom += 0.1;
@@ -40,7 +48,7 @@ zoomIn.addEventListener("click", function() {
     }
 });
 
-//Event listener for zoom-out button 
+// Event listener for zoom-out button 
 zoomOut.addEventListener("click", function() {
     if(currZoom > minZoom){
         currZoom -= 0.1;
@@ -59,8 +67,8 @@ vidbtn.addEventListener("click", function() {
     }
     else{
         mediaRecorder.start();
-        // filter = "";
-        // removeFilter();
+        filter = "";
+        removeFilter();
         video.style.transform = `scale(1)`;
         currZoom = 1;
         isRecording = true;
@@ -92,7 +100,7 @@ navigator.mediaDevices.getUserMedia(contraints).then(function (mediaStream) {
     mediaRecorder.addEventListener("stop", function(e) {
         //Blob is the large raw data jo chunks ke data ko tukde me jama krte he
         let blob = new Blob(chunks, {type : "video/mov"});
-
+        addMedia("video", blob);
         chunks = [];
 
         let url = URL.createObjectURL(blob);
@@ -121,13 +129,14 @@ function capture() {
 
     ctx.drawImage(video, 0, 0);
     //jo hmne canvas se rect bnaya he usko filter color de rhhe
-    // if(filter != 0){
-    //     ctx.fillStyle = filter;
-    //     ctx.fillRect(0,0,canvas.width,canvas.height);
-    // }
+    if(filter != 0){
+        ctx.fillStyle = filter;
+        ctx.fillRect(0,0,canvas.width,canvas.height);
+    }
     let a = document.createElement("a");
     a.download = "image.jpg";
     a.href = canvas.toDataURL();
+    addMedia("img", canvas.toDataURL());
     a.click();
     a.remove();
 }
@@ -140,10 +149,10 @@ function applyFilter(filterColor) {
     body.appendChild(filterDiv);
 }
 
-// function removeFilter() {
-//     let filterDiv = document.querySelector(".filter-div");
-//     if(filterDiv){
-//         filterDiv.remove();
-//     }
-// }
+function removeFilter() {
+    let filterDiv = document.querySelector(".filter-div");
+    if(filterDiv){
+        filterDiv.remove();
+    }
+}
 

@@ -88,6 +88,7 @@ video {
     height: calc(25rem / 6);
     background: url(fil.jpeg);
     background-size: cover;
+    /* ye background image ke saath backgroundcolor ko mila dega   */
     background-blend-mode: soft-light;
 }
 
@@ -110,7 +111,17 @@ video {
     font-weight: 400;
 }
 
-.filter-div {
+.filter-div{
     height: 100vh;
     width: 100vw;
+    position: fixed;
+    top: 0;
+  }
+
+#gallery {
+    position: fixed;
+    top: 8rem;
+    width: 5rem;
+    height: 5rem;
+    right: 5rem;
 }
